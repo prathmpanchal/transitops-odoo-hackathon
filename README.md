@@ -3,22 +3,22 @@ Odoo Hackathon 26', TransitOps Smart Transportation Platform
 
 # TransitOps
 
-## Backend
+## Backend Commands
 
-cd backend
-npm install
+cd backend\
+npm install\
 node server.js
 
-## Frontend
+## Frontend Commands
 
-cd frontend
-npm install
+cd frontend\
+npm install\
 npm run dev
 
-## Login
+## Login Credential
 
-Email:
+Email:\
 fleet@transitops.com
 
-Password:
+Password:\
 demo1234
