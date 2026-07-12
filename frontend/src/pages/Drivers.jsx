@@ -47,7 +47,19 @@ export default function Drivers() {
       setError(err.response?.data?.error || "Failed to create driver");
     }
   }
+async function handleSuspend(id) {
+  if (!window.confirm("Suspend this driver?")) return;
 
+  try {
+    await api.put(`/drivers/${id}`, {
+      status: "Suspended",
+    });
+
+    load();
+  } catch (err) {
+    alert(err.response?.data?.error || "Failed to suspend driver");
+  }
+}
   return (
     <DashboardLayout>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -85,11 +97,12 @@ export default function Drivers() {
             <th style={thStyle}>Category</th>
             <th style={thStyle}>Safety Score</th>
             <th style={thStyle}>Status</th>
+            <th style={thStyle}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {drivers.length === 0 && (
-            <tr><td colSpan={6} style={{ padding: 20, textAlign: "center", color: "#6b7280" }}>No drivers yet</td></tr>
+            <tr><td colSpan={7} style={{ padding: 20, textAlign: "center", color: "#6b7280" }}>No drivers yet</td></tr>
           )}
           {drivers.map((d) => (
             <tr key={d.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
@@ -100,7 +113,27 @@ export default function Drivers() {
               </td>
               <td style={tdStyle}>{d.license_category}</td>
               <td style={tdStyle}>{d.safety_score}</td>
-              <td style={tdStyle}><Badge status={d.status} /></td>
+              <td style={tdStyle}>
+  <Badge status={d.status} />
+</td>
+
+<td style={tdStyle}>
+  {d.status !== "Suspended" && (
+    <button
+      onClick={() => handleSuspend(d.id)}
+      style={{
+        background: "#dc2626",
+        color: "white",
+        border: "none",
+        padding: "6px 12px",
+        borderRadius: 6,
+        cursor: "pointer",
+      }}
+    >
+      Suspend
+    </button>
+  )}
+</td>
             </tr>
           ))}
         </tbody>
