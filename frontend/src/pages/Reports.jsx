@@ -2,6 +2,24 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import api from "../services/api";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend
+);
+
 export default function Reports() {
   const [efficiency, setEfficiency] = useState([]);
   const [utilization, setUtilization] = useState([]);
@@ -25,6 +43,28 @@ export default function Reports() {
     link.click();
     link.remove();
   }
+
+const costChartData = {
+  labels: cost.map(
+    (v) => `${v.registration_number}`
+  ),
+  datasets: [
+    {
+      label: "Operational Cost (₹)",
+      data: cost.map((v) => Number(v.operational_cost)),
+      backgroundColor: "#2563eb",
+    },
+  ],
+};
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+  },
+};
 
   return (
     <DashboardLayout>
@@ -64,7 +104,24 @@ export default function Reports() {
           ))}
         </tbody>
       </table>
+<div
+  style={{
+    background: "white",
+    padding: 20,
+    borderRadius: 12,
+    marginTop: 30,
+    boxShadow: "0 2px 8px rgba(0,0,0,.08)",
+  }}
+>
+  <h2 style={{ marginBottom: 20 }}>
+    Operational Cost Analytics
+  </h2>
 
+  <Bar
+    data={costChartData}
+    options={chartOptions}
+  />
+</div>
       <h3 style={{ marginTop: 24 }}>Operational Cost</h3>
       <table style={tableStyle}>
         <thead><tr style={{ textAlign: "left", borderBottom: "2px solid #e5e7eb" }}>
