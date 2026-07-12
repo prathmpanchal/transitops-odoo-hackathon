@@ -38,7 +38,33 @@ driverStmt.run('Deepak Rao', 'GJ01-2015-003', 'LMV', '2025-01-01', '9998887773',
 driverStmt.run('Meena Patel', 'GJ01-2020-004', 'LMV', '2027-03-15', '9998887774', 95, 'Available');
 driverStmt.run('Suresh Nair', 'GJ01-2021-005', 'HMV', '2027-09-01', '9998887775', 88, 'On Trip');
 
-// More data (trips, maintenance, etc.) will be added later
+// Trips — spans all four statuses so dashboard/reports have real data to show
+const tripStmt = db.prepare(`INSERT INTO trips
+  (source, destination, vehicle_id, driver_id, cargo_weight, planned_distance, actual_distance, fuel_consumed, status, revenue)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+tripStmt.run('Ahmedabad', 'Gandhinagar', 5, 5, 1200, 35, null, null, 'Dispatched', 3000);
+tripStmt.run('Ahmedabad', 'Vadodara', 1, 1, 300, 110, 112, 9.5, 'Completed', 5500);
+tripStmt.run('Ahmedabad', 'Surat', 2, 4, 900, 260, 265, 28, 'Completed', 12000);
+tripStmt.run('Gandhinagar', 'Ahmedabad', 3, 1, 40, 30, null, null, 'Draft', 800);
+tripStmt.run('Ahmedabad', 'Rajkot', 2, 4, 1100, 220, null, null, 'Cancelled', 0);
+
+// Maintenance logs
+const maintStmt = db.prepare(`INSERT INTO maintenance_logs
+  (vehicle_id, description, cost, start_date, end_date, status) VALUES (?, ?, ?, ?, ?, ?)`);
+maintStmt.run(4, 'Brake pad replacement', 4500, '2026-07-10', null, 'Open');
+maintStmt.run(1, 'Oil change', 1200, '2026-06-15', '2026-06-16', 'Closed');
+
+// Fuel logs
+const fuelStmt = db.prepare(`INSERT INTO fuel_logs (vehicle_id, liters, cost, date) VALUES (?, ?, ?, ?)`);
+fuelStmt.run(2, 30, 2850, '2026-07-05');
+fuelStmt.run(5, 15, 1425, '2026-07-11');
+fuelStmt.run(1, 9.5, 902, '2026-06-20');
+fuelStmt.run(2, 28, 2660, '2026-06-22');
+
+// Expenses
+const expStmt = db.prepare(`INSERT INTO expenses (vehicle_id, type, amount, date) VALUES (?, ?, ?, ?)`);
+expStmt.run(1, 'Toll', 150, '2026-07-08');
+expStmt.run(2, 'Parking', 80, '2026-07-09');
 
 console.log('✅ Full basic demo data seeded successfully!');
 console.log('Demo logins: fleet@transitops.com / demo1234 (and others)');

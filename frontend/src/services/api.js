@@ -7,4 +7,13 @@ const api = axios.create({
   },
 });
 
+// Attach the JWT to every request automatically, so pages never have to think about it
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export default api;

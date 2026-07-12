@@ -1,31 +1,34 @@
-import { Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
-function Placeholder({ title }) {
-  return <h1 style={{ padding: 40 }}>{title}</h1>;
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Vehicles from "./pages/Vehicles";
+import Drivers from "./pages/Drivers";
+import Trips from "./pages/Trips";
+import Maintenance from "./pages/Maintenance";
+import FuelExpenses from "./pages/FuelExpenses";
+import Reports from "./pages/Reports";
+
+function ProtectedRoute({ children }) {
+  const { token } = useAuth();
+  if (!token) return <Navigate to="/login" replace />;
+  return children;
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Placeholder title="Login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-      <Route path="/dashboard" element={<Dashboard />} />
-
-      <Route path="/vehicles" element={<Placeholder title="Vehicles" />} />
-
-      <Route path="/drivers" element={<Placeholder title="Drivers" />} />
-
-      <Route path="/trips" element={<Placeholder title="Trips" />} />
-
-      <Route
-        path="/maintenance"
-        element={<Placeholder title="Maintenance" />}
-      />
-
-      <Route path="/fuel" element={<Placeholder title="Fuel & Expenses" />} />
-
-      <Route path="/reports" element={<Placeholder title="Reports" />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/vehicles" element={<ProtectedRoute><Vehicles /></ProtectedRoute>} />
+      <Route path="/drivers" element={<ProtectedRoute><Drivers /></ProtectedRoute>} />
+      <Route path="/trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
+      <Route path="/maintenance" element={<ProtectedRoute><Maintenance /></ProtectedRoute>} />
+      <Route path="/fuel" element={<ProtectedRoute><FuelExpenses /></ProtectedRoute>} />
+      <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
     </Routes>
   );
 }
