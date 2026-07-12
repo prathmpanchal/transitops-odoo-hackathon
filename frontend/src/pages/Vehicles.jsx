@@ -63,6 +63,17 @@ export default function Vehicles() {
     }
   }
 
+async function handleDelete(id) {
+  if (!window.confirm("Retire this vehicle?")) return;
+
+  try {
+    await api.delete(`/vehicles/${id}`);
+    load();
+  } catch (err) {
+    alert(err.response?.data?.error || "Failed to retire vehicle");
+  }
+}
+
   return (
     <DashboardLayout>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -106,11 +117,12 @@ export default function Vehicles() {
             <th style={thStyle}>Odometer</th>
             <th style={thStyle}>Region</th>
             <th style={thStyle}>Status</th>
+	    <th style={thStyle}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {vehicles.length === 0 && (
-            <tr><td colSpan={7} style={{ padding: 20, textAlign: "center", color: "#6b7280" }}>No vehicles yet</td></tr>
+            <tr><td colSpan={8} style={{ padding: 20, textAlign: "center", color: "#6b7280" }}>No vehicles yet</td></tr>
           )}
           {vehicles.map((v) => (
             <tr key={v.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
@@ -120,7 +132,27 @@ export default function Vehicles() {
               <td style={tdStyle}>{v.max_load_capacity} kg</td>
               <td style={tdStyle}>{v.odometer} km</td>
               <td style={tdStyle}>{v.region || "-"}</td>
-              <td style={tdStyle}><Badge status={v.status} /></td>
+              <td style={tdStyle}>
+  <Badge status={v.status} />
+</td>
+
+<td style={tdStyle}>
+  {v.status !== "Retired" && (
+    <button
+      onClick={() => handleDelete(v.id)}
+      style={{
+        background: "#dc2626",
+        color: "white",
+        border: "none",
+        padding: "6px 12px",
+        borderRadius: 6,
+        cursor: "pointer",
+      }}
+    >
+      Retire
+    </button>
+  )}
+</td>
             </tr>
           ))}
         </tbody>
